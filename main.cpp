@@ -15,21 +15,27 @@ char inputChar(char** prompt);
 using namespace std;
 
 int main() {
-	int board[3][3];
+	char board[3][3];
+	int xwins, owins, ties;
 
 	do {
-		while (printBoard(b), !checkWin(&board)) {
+		while (printBoard(&b), !checkWin(&board)) {
 			userMove(&board);
 		}
 
 		switch(checkWin(&board)) {
 		case TIE: cout << "Tie!";
+			 ties++;
 			 break;
 		case XPLAYER: cout << "X wins!";
+			 xwins++;
 			 break;
 		case OPLAYER: cout << "O wins!";
+			 owins++;
 			 break;
 		}
+
+
 
 
 	} while (inputChar("Play another game?(y/n):") == 'y');
@@ -40,13 +46,18 @@ int main() {
 }
 
 
+int checkWin(int board[][3]) {
+	
+}
+
+
 char inputChar(char* prompt) {
 	char input;
 
 	cout << prompt;
 
 	while (cin >> input || cin.peek()) {
-		cout << "Enter valid input type: ";
+		cout << "Enter valid input: ";
 		cin.ignore(1000);
 		cin.clear();
 	}
