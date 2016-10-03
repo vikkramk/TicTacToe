@@ -6,24 +6,28 @@
 #define XPLAYER = 2;
 #define OPLAYER = 3;
 
+struct Move;
 
-int checkWin(int** board);
-int userMove(int** board);
+int checkWin(int** board, Move* m);
+Move userMove(int** board);
 int printBoard(int** board);
-char inputChar(char** prompt);
+char inputChar(char** prompt, bool isolated);
 
 using namespace std;
 
 int main() {
 	char board[3][3];
-	int xwins, owins, ties;
+	int xwins, owins, ties, moves;
+	Move m;
 
 	do {
-		while (printBoard(&b), !checkWin(&board)) {
-			userMove(&board);
+		moves = 0;
+		while (printBoard(&b), !checkWin(board, &m) && move < 9) {
+			m = userMove(&board);
+			moves++;
 		}
 
-		switch(checkWin(&board)) {
+		switch(checkWin(&board) || moves == 9) {
 		case TIE: cout << "Tie!";
 			 ties++;
 			 break;
@@ -36,9 +40,7 @@ int main() {
 		}
 
 
-
-
-	} while (inputChar("Play another game?(y/n):") == 'y');
+	} while (inputChar("Play another game?(y/n):", true) == 'y');
 
 	return 0;
 
@@ -46,8 +48,39 @@ int main() {
 }
 
 
-int checkWin(int board[][3]) {
+struct Move {
+	int x, y, player;
+};
+
+int checkWin(int board[][3], Move* m) {
+	int c, counters[4];
+
+	for (c=0; c<3; c++) {
+		counters[0] += board[m->x][c]==player;
+		counters[1] += board[c][m->y]==player;
+		counters[2] += board[c][c]==player;
+		counters[3] += board[c][2-c]== player;
+	}
+
+	for (c=0; c<4; c++)
+		if (counters[c]==3)
+			return player;
+
+	return NULL;
+}
+
+Move userMove(int board[][3]) {
+	Move m;
+	bool valid = false;
 	
+	while (!valid) {
+		m.x = inputChar("Enter move:",false)-96;
+		valid = m.x > 0 && m.x < 4;
+		m.y = inputChar("",true)-48;
+		valid = valid && m.x > 0 && m.x < 4;
+	}
+
+	return m;
 }
 
 
@@ -56,7 +89,7 @@ char inputChar(char* prompt) {
 
 	cout << prompt;
 
-	while (cin >> input || cin.peek()) {
+	while (cin >> input || (isolated && cin.peek())) {
 		cout << "Enter valid input: ";
 		cin.ignore(1000);
 		cin.clear();
