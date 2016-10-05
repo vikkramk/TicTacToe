@@ -9,7 +9,7 @@
 struct Move;
 
 int checkWin(int** board, Move* m);
-Move userMove(int** board);
+int userMove(int** board, Move* m);
 int printBoard(int** board);
 char inputChar(char** prompt, bool isolated);
 
@@ -20,14 +20,16 @@ int main() {
 	int xwins, owins, ties, moves;
 	Move m;
 
+	m.player = 0;
+
 	do {
 		moves = 0;
-		while (printBoard(&b), !checkWin(board, &m) && move < 9) {
-			m = userMove(&board);
+		while (printBoard(&board), !checkWin(board, &m) && move < 9) {
+			userMove(&board, &m);
 			moves++;
 		}
 
-		switch(checkWin(&board) || moves == 9) {
+		switch(checkWin(&board, &m) || moves == 9) {
 		case TIE: cout << "Tie!";
 			 ties++;
 			 break;
@@ -69,16 +71,21 @@ int checkWin(int board[][3], Move* m) {
 	return NULL;
 }
 
-Move userMove(int board[][3]) {
-	Move m;
+int userMove(int board[][3], Move* m) {
 	bool valid = false;
 	
+	if (m->player == XPLAYER) m->player = OPLAYER;
+	else m->player = XPLAYER;
+
+
 	while (!valid) {
-		m.x = inputChar("Enter move:",false)-96;
-		valid = m.x > 0 && m.x < 4;
-		m.y = inputChar("",true)-48;
-		valid = valid && m.x > 0 && m.x < 4;
+		m->x = inputChar("Enter move:",false)-96;
+		valid = m->(x > 0) && m->(x < 4);
+		m->y = inputChar("",true)-48;
+		valid = valid && m->(x > 0) && m->(x < 4);
 	}
+
+	board[m->x][m->y] = player;
 
 	return m;
 }
@@ -96,4 +103,19 @@ char inputChar(char* prompt) {
 	}
 
 	return char;
+}
+
+int printboard(char board[][3]) {
+	int x,y;
+	char template = {' ','a', 'b', 'c'
+			,'1','\0','\0','\0'
+			,'2','\0','\0','\0'
+			,'3','\0','\0','\0'}
+
+	for (x=0; x<3; x++) {
+		for (y=0; y<3; y++) {
+			cout << 
+		}
+	}
+
 }
