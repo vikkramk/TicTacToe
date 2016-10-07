@@ -10,7 +10,7 @@
 
 //Stores info about moves
 struct Move {
-	int x,y,player;
+	int x=0,y=0,player=0;
 };
 
 //Functions
@@ -33,8 +33,6 @@ int main() {
 
 	char* prompt = "Play another game?(y/n):";
 
-
-	m.player = NULL;
 
 	//Main loop
 	do {
@@ -112,9 +110,12 @@ int userMove(char board[][3], Move* m) {
 	while (!valid) {
 		m->x = inputChar("Enter move:",false)-97;
 		valid = (m->x >= 0) && (m->y < 3);
-		m->y = inputChar("",true)-49;
-		valid = valid && ((m->x >= 0) && (m->y < 3));
-		valid = valid && (board[m->x][m->y]==' ');
+		if (valid) {
+			m->y = inputChar("",true)-49;
+			valid = valid && ((m->x >= 0) && (m->y < 3));
+		}
+		if (valid)
+			valid = (board[m->x][m->y]==' ');
 	}
 
 	//Record move on board
@@ -133,7 +134,7 @@ char inputChar(char* prompt, bool isolated) {
 	//Take input until it conforms to whether it should be alone on line or not
 	while (cin >> input, isolated && (cin.peek()!='\n')) {
 		cout << "Enter valid input:";
-		cin.ignore(1000);
+		cin.ignore(1000, '\n');
 		cin.clear();
 	}
 
@@ -164,6 +165,8 @@ int printBoard(char board[][3]) {
 		cout << '\n';
 	}
 
+
+	return 0;
 }
 
 
